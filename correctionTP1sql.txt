@@ -9,4 +9,6 @@ f) select nomprod from produit where numprod in ('p1','p2', 'p3', 'p4');
 2 - Sous Requettes :
 a) select nomfour from produit, fournisseur, stock where (produit.couleur='rouge' and fournisseur.numfour=stock.numfour and produit.numprod=stock.numprod);
 nomfour 
-b) noms des fournisseurs ayant livré le produit p2
+b) select nomfour from  fournisseur , stock where (stock.numprod='p2' and stock.numfour=fournisseur.numfour);
+nomfour 
+c) numéros des fournisseurs ayant livré au moins un article identique à ceux livrés par f2
