@@ -1,0 +1,10 @@
+Sujet n°1 :
+1 - Requetes simples :
+a) select * from fournisseur where (ville='Paris');
+b) select numprod, nomprod, poids from produit where poids >= 0.3 and origine = 'Paris'# On selectionne d'abord les colonnes qu'on veur en resultat en ce cas le nom du produit et son numero, apres on met les conditions
+c) select numprod, nomprod, poids from produit where poids >= 0.3 and origine = 'Paris' order by poids DESC # On rajoute pour qu'il trie avec le poids decroissant.
+d) select numfour, numprod from produit, fournisseur where (fournisseur.ville = produit.origine); # on veut voir la correspondance entre les numprod et les numfour la ou ils ont des produits de la meme ville
+e) select DISTINCT p1.numprod, p2.numprod from produit p1, produit p2 where (p1.origine = p2.origine) AND (p1.numprod != p2.numprod); # C'est perfecto, je parcoure les tableaux 2 fois, et je donne la correspondance de la ou le produit ils ont la meme origine.
+f) PAS FAIT !!!
+2 - Sous Requettes :
+a) La il faut faire des sous-requettes
