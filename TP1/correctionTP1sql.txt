@@ -11,4 +11,4 @@ a) select nomfour from produit, fournisseur, stock where (produit.couleur='rouge
 nomfour 
 b) select nomfour from  fournisseur , stock where (stock.numprod='p2' and stock.numfour=fournisseur.numfour);
 nomfour 
-c) numéros des fournisseurs ayant livré au moins un article identique à ceux livrés par f2
+c) 
