@@ -1,0 +1,73 @@
+3. select distinct m.nompc, c.nomcomp from machine m, composant c, assemble a
+   ...> INNER JOIN assemble ON a.numPC = m.numpc
+   ...> INNER JOIN assemble ON a.refcomp = c.refcomp;
+
+Resultat : 
+
+nompc         nomcomp                    
+------------  ---------------------------
+Serveur Etud  CD-ROM 40X IDE             
+Serveur Etud  Abit BE6 ATX UDMA66        
+Serveur Etud  9,1Go IBM UW2 10000trs     
+Serveur Etud  Pentium III - 500MHz       
+Serveur Etud  S3 Trio 128 bits 4Mo AGP   
+Serveur Etud  SDRAM 128Mo PC100          
+Serveur Etud  15" teco pitch 0.28        
+PC Admin      Celeron 500MHz             
+PC Admin      6,4Go Seagate UDMA33/66    
+PC Admin      Asus P5A ATX               
+PC Admin      SDRAM 64Mo PC100           
+PC Admin      Intel 740 8Mo AGP          
+PC Admin      17" teco pitch 0.28        
+station 1     CD-ROM 50X Asus IDE        
+station 1     Abit BH6 ATX               
+station 1     6,4Go Seagate UDMA33/66    
+station 1     ATI 128 Fury 32Mo AGP + TV 
+station 1     Pentium III - 600MHz       
+station 1     17" IIYAMA S703HT 0.26     
+station 1     16 bits 3D comp SB16 ISA   
+station 1     SDRAM 128Mo PC100          
+station 2     CD-ROM 50X Asus IDE        
+station 2     Abit BH6 ATX               
+station 2     6,4Go Seagate UDMA33/66    
+station 2     ATI 128 Fury 32Mo AGP + TV 
+station 2     Pentium III - 600MHz       
+station 2     17" IIYAMA S703HT 0.26     
+station 2     16 bits 3D comp SB16 ISA   
+station 2     SDRAM 128Mo PC100          
+PC du chef    CD-ROM 40X Plextor SCSI    
+PC du chef    17" IIYAMA A702HT          
+PC du chef    9,1Go IBM UW2 10000trs     
+PC du chef    Matrox G400 32Mo max       
+PC du chef    Athlon 800MHz              
+PC du chef    Sound Blaster Live Player  
+PC du chef    FIC SD11 UDMA33/66 (Athlon)
+PC du chef    SDRAM 64Mo PC100           
+PC codeur     Celeron 433MHz             
+PC codeur     4,3Go Seagate UDMA33/66    
+PC codeur     EDO SIMM 16Mo              
+PC codeur     Matsonic MS6260            
+PC codeur     S3 Trio 128 bits 4Mo AGP   
+PC codeur     15" teco pitch 0.28
+
+4. select distinct m.nompc from machine m, composant c, assemble a
+    ...> INNER JOIN assemble ON a.numPC = m.numpc
+    ...> INNER JOIN assemble ON a.refcomp = c.refcomp
+    ...> where c.type like '%Video%';
+
+Resultat :
+
+nompc       
+------------
+Serveur Etud
+PC Admin    
+station 1   
+station 2   
+PC du chef  
+PC codeur
+
+5. noms des machines equipees d'un processeur supportant les instructions 3D Now
+select distinct m.nompc from machine m, composant c, assemble a
+    ...> INNER JOIN assemble ON a.numPC = m.numpc
+    ...> INNER JOIN assemble ON a.refcomp = c.refcomp
+    ...> where c.type like '%Processeur%' and c.nomcomp like '%3D%';

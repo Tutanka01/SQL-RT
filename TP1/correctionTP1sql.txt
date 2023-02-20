@@ -1,114 +1,334 @@
-Sujet n°1 :
-1 - Requetes simples :
-a) select * from fournisseur where (ville='Paris');
-b) select numprod, nomprod, poids from produit where poids >= 0.3 and origine = 'Paris'# On selectionne d'abord les colonnes qu'on veur en resultat en ce cas le nom du produit et son numero, apres on met les conditions
-c) select numprod, nomprod, poids from produit where poids >= 0.3 and origine = 'Paris' order by poids DESC # On rajoute pour qu'il trie avec le poids decroissant.
-d) select numfour, numprod from produit, fournisseur where (fournisseur.ville = produit.origine); # on veut voir la correspondance entre les numprod et les numfour la ou ils ont des produits de la meme ville
-e) select DISTINCT p1.numprod, p2.numprod from produit p1, produit p2 where (p1.origine = p2.origine) AND (p1.numprod != p2.numprod); # C'est perfecto, je parcoure les tableaux 2 fois, et je donne la correspondance de la ou le produit ils ont la meme origine.
-f) select nomprod from produit where numprod in ('p1','p2', 'p3', 'p4');
-2 - Sous Requettes :
-a) select nomfour from produit, fournisseur, stock where (produit.couleur='rouge' and fournisseur.numfour=stock.numfour and produit.numprod=stock.numprod);
-nomfour 
-b) select nomfour from  fournisseur , stock where (stock.numprod='p2' and stock.numfour=fournisseur.numfour);
+---
+geometry: margin=2cm
+---
 
-Resultat :
+# Requêtes simples :
 
-nomfour
---------
-Dupont
-Courvite
-Frip64
-Alpages
+(a) noms des fournisseurs situés à Paris
 
- 
-c)select distinct numfour from stock where numprod in (select numprod from stock where numfour = 'f2');
+```sql
+SELECT nomfour 
+    FROM fournisseur 
+    WHERE ville="Paris";
+```
 
-Resultat :
+(b) numéros des produits provenant de Paris et dont le poids est supérieur ou égal à 0.3
 
-numfour
--------
-f1
-f2
-f3
-f4
+```sql
+SELECT numProd 
+    FROM Produit 
+    WHERE origine="Paris" AND poids >= 0.3;
+```
 
-d) select distinct numprod from produit where origine = (select origine from produit where (numprod = 'p1'));
+(c) idem précédent, mais triés par poids décroissant
 
-Resultat : 
+```sql
+SELECT numProd 
+    FROM Produit 
+    WHERE origine="Paris" AND poids >= 0.3 
+    ORDER BY poids DESC;
+```
 
-numprod
--------
-p1
-p6
-p7
+(d) correspondance entre les numéros de fournisseurs et les numéros de produits de la même ville
 
-3 - Exists et non exists :
-a) select nomfour FROM fournisseur WHERE EXISTS (select * from stock, 
-fournisseur WHERE (stock.numfour=fournisseur.numfour) 
-and (stock.numprod='p2'));
+```sql
+SELECT numProd, numfour 
+    FROM Produit 
+    INNER JOIN fournisseur ON produit.origine = fournisseur.ville;
+```
 
-Resultat :
+(e) correspondance entre les numéros de produits de la même ville
 
-nomfour
----------
-Dupont
-Courvite
-Frip64
-Alpages
-Stanislas
+```sql
+SELECT C1.numprod, C2.numprod 
+    FROM Produit C1, Produit C2 
+    WHERE C1.origine = C2.origine AND C1.numprod < C2.numprod;
+```
 
+(f) noms des produits dont le numéro est p1, p2, p3 ou p4
 
-b) select distinct f.nomfour from stock s, fournisseur f where s.numfour=f.numfour and s.numprod!='p2';
+```sql
+SELECT nomProd 
+    FROM Produit 
+    WHERE numProd="p1" OR numProd="p2" OR numProd="p3" OR numProd="p4";
+```
 
+# Sous-requêtes :
 
-Resultat : 
+(a) noms des fournisseurs ayant livré des produits de couleur rouge
 
-nomfour
---------
-Dupont
-Courvite
+```sql
+SELECT nomfour 
+    FROM fournisseur 
+    INNER JOIN Stock ON Stock.numFour = fournisseur.numFour 
+    INNER JOIN Produit ON Produit.numProd = Stock.numProd 
+    WHERE Produit.couleur="rouge";
+```
 
-c ) Les consignes ne sont pas claires sur cet exo.
+(b) noms des fournisseurs ayant livré le produit p2
 
-4 - Group by et having
-a) select distinct p.nomprod,s.qte from stock s, produit p where (s.numprod = p.numprod);
+```sql
+SELECT nomFour
+    FROM Fournisseur, Stock, Produit
+    WHERE Fournisseur.numFour = Stock.numFour AND 
+        Stock.numProd = Produit.numProd AND 
+        Produit.numProd = "p2";
+```
 
-Resultat : 
+(c) numéros des fournisseurs ayant livré au moins un article identique à ceux livrés par f2
 
-nomprod       qte
-------------  ---
-veste         300
-pantalon      200
-veste longue  200
-chemise       400
-pantalon      400
-veste longue  300
-jean          400
-manteau       100
-jean          100
-chemise       150
-chemise       100
-manteau       50
-veste         200
+```sql
+SELECT DISTINCT Stock.numFour
+    FROM Stock
+    WHERE numFour != "f2" numProd IN (SELECT numProd
+            FROM Stock
+            WHERE numFour = "f2");
+```
 
+(d) numéros des produits originaires de la même ville que p1
 
-b) select distinct p.nomprod,s.qte from stock s, produit p where (s.num
-prod = p.numprod and s.numprod !='p1');
+```sql
+SELECT C2.numProd
+    FROM Produit C1, Produit C2
+    WHERE C2.numProd != "p1" AND 
+        C1.numProd = "p1" AND 
+        C1.origine = C2.origine;
+```
 
-Resultat : 
+# 3. "Exists" et "not exists" :
 
-nomprod       qte
-------------  ---
-pantalon      200
-veste longue  200
-chemise       400
-pantalon      400
-veste longue  300
-jean          400
-manteau       100
-jean          100
-chemise       150
-chemise       100
-manteau       50
+(a) noms des fournisseurs ayant livré le produit p2
 
-c) numéros des fournisseurs ayant livré au moins deux produits
+```sql
+SELECT DISTINCT F.nomFour
+    FROM Fournisseur F
+    WHERE EXISTS (
+        SELECT *
+            FROM Stock S
+            WHERE S.numProd = "p2" AND S.numFour = F.numFour
+    );
+```
+
+(b) noms des fournisseurs n'ayant pas livré le produit p2
+
+```sql
+SELECT DISTINCT F.nomFour
+    FROM Fournisseur F
+    WHERE NOT EXISTS (
+        SELECT *
+        FROM Stock S
+        WHERE S.numProd = "p2" AND S.numFour = F.numFour
+    );
+```
+
+(c) noms des fournisseurs tels qu'il n'y ait pas de produit qu'ils n'aient pas livré (...)
+
+```sql
+SELECT DISTINCT F1.nomFour
+    FROM Fournisseur F1
+    WHERE NOT EXISTS (
+        SELECT DISTINCT P1.numProd
+            FROM Produit P1
+            WHERE NOT EXISTS (
+                SELECT S2.numFour
+                    FROM Stock S2
+                    WHERE S2.numProd = P1.numProd AND 
+                        S2.numFour = F1.numFour
+            )
+    );
+```
+
+# "Group by" et "having" :
+
+(a) total des quantités livrées pour chaque produit
+
+```sql
+SELECT numProd, SUM(qte)
+    FROM Stock
+    GROUP BY numProd;
+```
+
+(b) idem précédent, mais p1 non pris en compte
+
+```sql
+SELECT numProd, SUM(qte)
+    FROM Stock
+    WHERE numProd != "p1"
+    GROUP BY numProd;
+```
+
+(c) numéros des fournisseurs ayant livré au moins deux produits
+
+```sql
+SELECT DISTINCT numFour
+    FROM Stock
+    GROUP BY numFour
+    HAVING COUNT(numProd) >= 2;
+```
+# Requêtes en vrac
+
+(a) numéros des produits livrés par plus d'un fournisseur (donner 3 solutions différentes)
+
+```sql
+SELECT DISTINCT S1.numprod
+    FROM Stock S1, Stock S2
+    WHERE S1.numfour < S2.numfour AND
+        S1.numprod = S2.numprod;
+```
+
+```sql
+SELECT numprod
+    FROM Stock
+    GROUP BY numprod
+    HAVING COUNT(numprod) > 1;
+```
+
+```sql
+
+```
+
+(b) numéros des fournisseurs ayant livré au moins tous les produits livrés par f2
+
+```sql
+SELECT DISTINCT F1.nomFour
+    FROM Fournisseur F1
+    WHERE F1.numfour != "f2" AND NOT EXISTS (
+        SELECT DISTINCT P1.numProd
+            FROM Stock P1
+            WHERE P1.numfour = "f2" AND NOT EXISTS (
+                SELECT S2.numFour
+                    FROM Stock S2
+                    WHERE S2.numProd = P1.numProd AND 
+                        S2.numFour = F1.numFour
+            )
+    );
+```
+
+(c) numéros, nom et poids de tous les produits pour lesquels il existe au moins un produit plus léger dans la liste
+
+```sql
+SELECT numprod, nomprod, MAX(poids)
+    FROM Produit;
+```
+
+(d) numéros, nom et poids de tous les produits pour lesquels il existe au moins un produit plus léger dans la liste
+
+```sql
+SELECT numprod, nomprod, poids
+    FROM Produit
+    WHERE poids > (SELECT MIN(poids) FROM Produit);
+```
+
+(e) numéros des fournisseurs dont la remise est strictement inférieure à la remise maximale
+
+```sql
+SELECT numfour
+    FROM Fournisseur
+    WHERE remise < (SELECT MAX(remise) FROM Fournisseur);
+```
+
+(f) numéros des produits (ainsi que leur poids et leur origine) dont le poids est supérieur ou égal au poids moyen des produits originaires de la même ville
+
+```sql
+SELECT P1.numprod, P1.poids, P1.origine
+    FROM Produit P1
+    WHERE poids >= (
+        SELECT AVG(P2.poids) 
+            FROM Produit P2 
+            WHERE P2.origine = P1.origine
+    );
+```
+
+(g) total des quantités livrées pour chaque produit
+
+```sql
+SELECT numprod, SUM(qte)
+    FROM Stock
+    GROUP BY numprod;
+```
+
+(h) numéros des produits ayant été livrés au moins une fois (donner 3 solutions différentes)
+
+```sql
+SELECT DISTINCT numprod
+    FROM Stock;
+```
+
+```sql
+SELECT Produit.numprod
+    FROM Produit
+    WHERE EXISTS (
+        SELECT *
+            FROM Stock
+            WHERE Stock.numprod = Produit.numprod
+    );
+```
+
+```sql
+SELECT DISTINCT Produit.numprod
+    FROM Produit
+    INNER JOIN Stock ON Produit.numprod = Stock.numprod;
+```
+
+(i) pour tous les produits rouges ou bleus dont la quantité totale livrée est supérieure à 350 (en excluant du total les commandes dont la quantité est inférieure à 200), donner le numéro du produit, le poids en pounds (sachant qu'une livre vaut 450 grammes), la couleur et la plus grande quantité livrée pour ce produit
+
+```sql
+SELECT P.numprod, ROUND(P.poids*(1/0.45), 2), MAX(S.qte)
+    FROM Produit P, Stock S
+    WHERE (P.couleur = "bleu" OR P.couleur = "rouge") AND
+        P.numprod = S.numprod AND 
+        S.qte > 200
+    GROUP BY P.numprod
+    HAVING SUM(S.qte) > 350;
+```
+
+(j) liste des couples de nom de fournisseurs installés dans la même ville et ayant livré au moins un produit identique
+
+```sql
+SELECT F1.nomfour, F2.nomfour
+    FROM Fournisseur F1, Fournisseur F2
+    WHERE F1.nomfour < F2.nomfour AND 
+        F1.ville = F2.ville AND 
+        EXISTS (
+            SELECT *
+                FROM Stock S1, Stock S2
+                WHERE S1.numfour = F1.numfour AND 
+                    S2.numfour = F2.numfour AND 
+                    S1.numprod = S2.numprod
+        );
+```
+
+(k) commande SQL permettant de rajouter une colonne PU (prix unitaire) dans la table Produit
+
+```sql
+ALTER TABLE Produit ADD COLUMN PU INTEGER ;
+```
+
+(l) valeur marchande du stock pour chacun des fournisseurs (avec leur nom)
+
+```sql
+SELECT nomfour, SUM(qte*PU)
+    FROM Fournisseur, Stock, Produit
+    WHERE Stock.numfour = Fournisseur.numfour AND
+    Stock.numprod = Produit.numprod
+    GROUP BY Fournisseur.numfour;
+
+```
+
+(m) dans la table Produit, convertir le poids des articles en livres (pounds)
+
+```sql
+SELECT numprod, nomprod, couleur, ROUND(poids*(1/0.45), 2), origine, PU
+    FROM produit;
+```
+
+(n) supprimer tous les founisseurs n'ayant pas livré le moindre produit
+
+```sql
+DELETE FROM Fournisseur
+    WHERE NOT EXISTS (
+        SELECT *
+            FROM Stock
+            WHERE Stock.numfour = Fournisseur.numfour
+    );
+```
