@@ -66,8 +66,52 @@ station 2
 PC du chef  
 PC codeur
 
-5. noms des machines equipees d'un processeur supportant les instructions 3D Now
-select distinct m.nompc from machine m, composant c, assemble a
-    ...> INNER JOIN assemble ON a.numPC = m.numpc
-    ...> INNER JOIN assemble ON a.refcomp = c.refcomp
-    ...> where c.type like '%Processeur%' and c.nomcomp like '%3D%';
+5. select distinct m.nompc from machine m, processeur p, assemble a
+    ...> INNER JOIN assemble ON a.numpc = m.numpc
+    ...> INNER JOIN assemble ON a.refcomp = p.refcomp
+    ...> where p.troisdnow like '%oui%';
+
+Resultat :
+
+nompc     
+----------
+PC du chef
+
+6. SELECT nomComp
+    FROM Composant
+    INNER JOIN Assemble ON Composant.refComp = Assemble.refComp
+    INNER JOIN Machine ON Assemble.numPC = Machine.numPC
+    WHERE salle = "atelier";
+
+Resultat :
+
+nomcomp                 
+------------------------
+CD-ROM 40X IDE          
+Abit BE6 ATX UDMA66     
+9,1Go IBM UW2 10000trs  
+Pentium III - 500MHz    
+S3 Trio 128 bits 4Mo AGP
+SDRAM 128Mo PC100       
+15" teco pitch 0.28     
+Celeron 500MHz          
+6,4Go Seagate UDMA33/66 
+Asus P5A ATX            
+SDRAM 64Mo PC100        
+Intel 740 8Mo AGP       
+17" teco pitch 0.28
+
+7. SELECT DISTINCT salle
+    FROM Machine
+    INNER JOIN Assemble ON Machine.numPC = Assemble.numPC
+    INNER JOIN Composant ON Assemble.refComp = Composant.refComp
+    WHERE type = "Son";
+
+Resultat : 
+
+salle   
+--------
+showroom
+bureau  
+
+8. 
