@@ -36,6 +36,13 @@ SELECT numProd, numfour
     FROM Produit 
     INNER JOIN fournisseur ON produit.origine = fournisseur.ville;
 ```
+Resultat : 
+
+numprod  numfour
+-------  -------
+p1       f1     
+p6       f1     
+p7       f1     
 
 (e) correspondance entre les numéros de produits de la même ville
 
