@@ -6,7 +6,7 @@ cur = con.cursor()
 cur.execute("select * from composant")
 res = cur.fetchall()
 print("<table border=1>")
-print("<>" + "<th>Refcomp</th>" + "<th>NomComp</th>" + "<th>Marque</th>" + "<th>Type</th>" + "</tr>")
+print("<th>Refcomp</th>" + "<th>NomComp</th>" + "<th>Marque</th>" + "<th>Type</th>" + "</tr>")
 
 #print("<tr>" +"<td>"+ row[0]+"</td>"+"<td>"+row[1]+"</td>"+"<td>"+ row[3] +"</td>"+ "</tr>")
 
