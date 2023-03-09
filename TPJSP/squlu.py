@@ -22,3 +22,22 @@ for element in out:
     print("</tr>")
 print("</table>")
 print("</body></HTML>")
+
+
+print("<HTML><body>")
+print("<table style='border: 1px solid black;'>")
+for i in range(0, len(res)):
+    print("<tr>")
+    for j in range(0, len(res[i])):
+        print(res[i][j])
+        if res[i][j] == 1:
+            print("<td style='border: 1px solid black; background-color:yellow;'>{}</td>".format(res[i][j]))
+        elif res[i][j] == 0:
+            print("<td style='border: 1px solid black; background-color:green;'>{}</td>".format(res[i][j]))
+        elif res[i][j] > 1:
+            print("<td style='border: 1px solid black; background-color:green;'>{}</td>".format(res[i][j]))
+        else:
+            print("<td style='border: 1px solid black;'>{}</td>".format(res[i][j]))
+    print("</tr>")
+print("</table>")
+print("</body></HTML>")'''

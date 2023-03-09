@@ -1,0 +1,32 @@
+Correction TPJSP
+
+1: select DISTINCT e.nomEtud from etudiant e , projet p INNER JOIN projet on e.idetud=p.idetud where p.note IS not NULL;
+
+Resultat : 
+nomEtud
+-------
+Bob    
+David  
+Kylie  
+Indiana
+Gary   
+Elsa   
+Charlie
+Mike   
+
+2: SELECT nometud FROM etudiant, projet WHERE etudiant.idetud = projet.idetud GROUP BY nometud HAVING COUNT(*) = (SELECT COUNT(*) FROM cours);
+Resultat :
+nomEtud
+-------
+Bob    
+Indiana
+
+3: SELECT nomEtud from etudiant where not EXISTS (select * from projet where etudiant.idetud = projet.idetud);
+Resultat : 
+nomEtud
+-------
+Alice  
+Frank  
+Henry  
+
+4: SELECT nomcours FROM cours, projet WHERE cours.idcours = projet.idcours AND projet.idetud = (SELECT idetud FROM etudiant WHERE nometud = 'BOB') AND projet.note > 0;
